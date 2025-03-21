@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "usart.h"
 #include "usb_device.h"
 #include "gpio.h"
 
@@ -87,6 +88,7 @@ void USB_Status_Init(void)
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -111,6 +113,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USB_DEVICE_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   usb_init();
   /* USER CODE END 2 */
