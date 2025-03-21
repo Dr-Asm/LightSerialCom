@@ -3,6 +3,9 @@
 #include "LSC_functions.h"
 #include "stdint.h"
 
+#define LSC_FUNCTIONS_MOUNT_MAX 32
+#define LSC_QUEUE_MAX_LENGTH 128
+
 //指令分隔符
 extern const char LSC_COMMAND_GAP_CHAR[];
 
@@ -14,6 +17,17 @@ typedef struct{
   char (*function)(char*);
 }LSC_function_t;
 
+//shell队列结构体
+typedef struct{
+  uint16_t head;
+  uint16_t tail;
+  uint16_t length;
+  uint16_t update;
+  char* data;
+}LSC_queue_t;
+extern LSC_queue_t LSC_rxQueue;
+extern LSC_queue_t LSC_txQueue;
+
 //extern LSC_function_t* (LSC_functions[]);
 
 //指令数量
@@ -24,6 +38,7 @@ const LSC_function_t* LSC_functions_find(char* cmd);
 
 //添加LSC指令
 int32_t LSC_functions_load(const LSC_function_t* function);
+
 
 //LSC命令解算
 //Call example(usbd_cdc):

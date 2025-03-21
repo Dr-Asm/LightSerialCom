@@ -4,19 +4,34 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#define LSC_FUNCTIONS_MOUNT_MAX 32
 const char LSC_COMMAND_GAP_CHAR[] = " \t\r\n";
 
+//LSC shell输入输出队列
+char LSC_rxQueueBuf[LSC_QUEUE_MAX_LENGTH], LSC_txQueueBuf[LSC_QUEUE_MAX_LENGTH];
+LSC_queue_t LSC_rxQueue={0,0,0,0,LSC_rxQueueBuf};
+LSC_queue_t LSC_txQueue={0,0,0,0,LSC_txQueueBuf};
 
+//LSC应用列表初始化
 const LSC_function_t* (LSC_functions[LSC_FUNCTIONS_MOUNT_MAX]);
 static uint16_t LSC_functions_num = 0;
-static const LSC_function_t* OccupiedFunc;
 
+static const LSC_function_t* OccupiedFunc;//当前处理应用
+
+
+//继续下一参数
+char* LSC_getNextArg()
+{
+  return strtok(NULL,LSC_COMMAND_GAP_CHAR);
+}
+
+//返回LSC应用数量
 uint16_t LSC_functions_getNum()
 {
   return LSC_functions_num;
 }
 
+
+//查询LSC应用
 const LSC_function_t* LSC_functions_find(char* cmd)
 {
   uint16_t i;
@@ -35,6 +50,7 @@ const LSC_function_t* LSC_functions_find(char* cmd)
   return NULL;
 }
 
+//注册LSC应用（无检查）
 static int LSC_functions_add(const LSC_function_t* function)
 {
   uint16_t i=0,j=0;
@@ -57,6 +73,7 @@ static int LSC_functions_add(const LSC_function_t* function)
   return 0;
 }
 
+//注册LSC应用
 int32_t LSC_functions_load(const LSC_function_t* function)
 {
   if (function->command == NULL || function->fullInfo == NULL || function->helpInfo == NULL || function->function == NULL){
@@ -68,6 +85,7 @@ int32_t LSC_functions_load(const LSC_function_t* function)
   return 0;
 }
 
+//处理命令输入
 int32_t LSC_functions_solve(char* cmd)
 {
   const LSC_function_t* function;
@@ -87,12 +105,9 @@ int32_t LSC_functions_solve(char* cmd)
   }
 }
 
-char* LSC_getNextArg()
-{
-  return strtok(NULL,LSC_COMMAND_GAP_CHAR);
-}
                        
 
+//弱定义输入输出实现
 __weak void LSC_printf(const char *fmt,...)
 {
     static va_list ap;
