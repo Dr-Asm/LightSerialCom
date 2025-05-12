@@ -40,7 +40,7 @@ static int LSC_functions_add(const LSC_function_t* function)
   uint16_t i=0,j=0;
   int16_t tmp;
   while(i<LSC_functions_num){
-    tmp = strcmp(LSC_functions[i]->command,function->command);
+    tmp = strcmp(function->command,LSC_functions[i]->command);
     if (tmp == 0){
       return 1;
     }else if (tmp < 0){
